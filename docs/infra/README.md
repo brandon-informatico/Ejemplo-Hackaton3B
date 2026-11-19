@@ -13,7 +13,8 @@ https://pulso-financiero-3b.1011estudio-ia.workers.dev
 ```
 
 - Sitio **estático**: Cloudflare publica lo que Vite construye a partir de `/frontend`.
-- **No hay backend ni base de datos todavía**: los agregará el equipo de backend.
+- **Base de datos**: Cloudflare D1 `pulso-financiero-db` con el dataset cargado. Todavía no está conectada a la página; backend la usa desde sus computadoras ([manual](../backend/README.md)).
+- **Backend (API)**: lo agregará el equipo de backend.
 - Configuración: [`cloudflare.config.ts`](../../cloudflare.config.ts) (formato del CLI `cf` 1.0).
 - Si alguien recarga una ruta como `/tiendas/T08`, el servidor entrega la página y React decide qué mostrar.
 

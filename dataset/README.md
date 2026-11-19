@@ -24,7 +24,9 @@ depositos = pd.read_csv("dataset/csv/depositos.csv", parse_dates=["fecha_venta",
 gastos = pd.read_csv("dataset/csv/gastos.csv")
 ```
 
-Para cargarlos a una base de datos, el orden seguro es: primero catálogos (`tiendas`, `productos`) y después movimientos (`ventas_pos`, `depositos`, `gastos`, `ventas_producto`).
+**Estos mismos datos ya están cargados en una base de datos en la nube** (Cloudflare D1 `pulso-financiero-db`). Cómo conectarse desde tu computadora: [docs/backend/README.md](../docs/backend/README.md). En la base, los montos están en centavos (columnas `*_centavos`).
+
+Si se cargan a otra base de datos, el orden seguro es: primero catálogos (`tiendas`, `productos`) y después movimientos (`ventas_pos`, `depositos`, `gastos`, `ventas_producto`).
 
 ## Modelo de datos (en estrella, normalizado)
 

@@ -24,7 +24,9 @@ Claridad de presentación    20%       Un directivo entiende el resultado y la a
 ESTADO ACTUAL
   Página web publicada (sitio estático en Cloudflare): https://pulso-financiero-3b.1011estudio-ia.workers.dev
   Dataset limpio y normalizado: carpeta /dataset
-  Backend (API y base de datos): pendiente, lo construye el equipo de backend.
+  Base de datos con el dataset cargado: Cloudflare D1 "pulso-financiero-db" (montos en centavos)
+  Backend (API y cálculos): pendiente, lo construye el equipo de backend.
+Manual de la base para backend: docs/backend/README.md
 Detalle del servidor: docs/infra/README.md · Guía del front: docs/frontend/README.md
 
 TERRITORIOS EN EL REPOSITORIO
