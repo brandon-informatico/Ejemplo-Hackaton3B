@@ -1,0 +1,31 @@
+tienda_id,nombre,region,ciudad,formato,fecha_apertura,m2
+T01,Tienda 01,Centro,Ciudad de México,Estándar,2020-09-01,410
+T02,Tienda 02,Norte,Monterrey,Plus,2024-10-09,500
+T03,Tienda 03,Sur,Villahermosa,Estándar,2018-02-23,400
+T04,Tienda 04,Occidente,Guadalajara,Estándar,2023-04-11,410
+T05,Tienda 05,Bajío,León,Plus,2025-03-02,490
+T06,Tienda 06,Centro,Ecatepec,Plus,2023-11-13,500
+T07,Tienda 07,Norte,Saltillo,Compacta,2018-09-20,290
+T08,Tienda 08,Sur,Oaxaca,Estándar,2021-05-18,380
+T09,Tienda 09,Occidente,Zapopan,Compacta,2024-09-02,320
+T10,Tienda 10,Bajío,Querétaro,Estándar,2022-10-15,400
+T11,Tienda 11,Centro,Puebla,Estándar,2019-07-04,400
+T12,Tienda 12,Norte,San Luis Potosí,Estándar,2020-06-07,400
+T13,Tienda 13,Sur,Mérida,Plus,2025-01-10,500
+T14,Tienda 14,Occidente,Morelia,Estándar,2024-06-09,400
+T15,Tienda 15,Bajío,Aguascalientes,Compacta,2020-08-09,300
+T16,Tienda 16,Centro,Toluca,Compacta,2021-02-19,310
+T17,Tienda 17,Norte,Torreón,Estándar,2021-08-29,410
+T18,Tienda 18,Sur,Tuxtla Gutiérrez,Compacta,2025-05-08,290
+T19,Tienda 19,Occidente,Colima,Estándar,2020-12-29,400
+T20,Tienda 20,Bajío,Irapuato,Estándar,2025-03-01,400
+T21,Tienda 21,Sur,Veracruz,Estándar,2026-07-06,400
+T22,Tienda 22,Norte,Chihuahua,Plus,2022-10-16,500
+T23,Tienda 23,Sur,Xalapa,Estándar,2024-11-22,380
+T24,Tienda 24,Occidente,Tepic,Compacta,2026-01-12,310
+T25,Tienda 25,Bajío,Celaya,Estándar,2026-03-09,410
+T26,Tienda 26,Centro,Pachuca,Estándar,2026-05-18,380
+T27,Tienda 27,Occidente,Tlaquepaque,Estándar,2026-06-22,380
+T28,Tienda 28,Bajío,Salamanca,Compacta,2026-08-17,300
+T29,Tienda 29,Norte,Ciudad Victoria,Estándar,2026-09-14,380
+T30,Tienda 30,Centro,Cuernavaca,Compacta,2026-10-05,300

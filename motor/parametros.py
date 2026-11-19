@@ -1,0 +1,6 @@
+"""Parámetros oficiales de las reglas de negocio."""
+
+UMBRAL_DIFERENCIA_PCT = 0.5
+UMBRAL_DIFERENCIA_CRITICA = 5000
+UMBRAL_GASTO_ATIPICO_PCT = 25
+MESES_PROMEDIO_MOVIL = 3

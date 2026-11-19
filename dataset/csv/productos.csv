@@ -1,0 +1,41 @@
+producto_id,nombre,categoria,marca_propia,precio_lista,costo
+P001,Leche entera 1 L,Lácteos,1,23.50,19.04
+P002,Huevo blanco 18 piezas,Huevo,0,62.00,55.80
+P003,Pan blanco de caja 680 g,Panadería,1,38.00,29.26
+P004,Refresco de cola 3 L,Bebidas,0,46.00,41.40
+P005,Agua purificada 1.5 L,Bebidas,1,9.50,7.03
+P006,Papel higiénico 12 rollos,Limpieza,1,72.00,56.16
+P007,Detergente en polvo 1 kg,Limpieza,1,29.00,22.04
+P008,Aceite vegetal 900 ml,Abarrotes,1,34.00,27.88
+P009,Arroz súper extra 900 g,Abarrotes,1,26.00,20.80
+P010,Frijol negro 900 g,Abarrotes,1,32.00,25.60
+P011,Azúcar estándar 1 kg,Abarrotes,1,29.50,25.08
+P012,Café soluble 120 g,Abarrotes,0,72.00,63.36
+P013,Atún en agua 130 g,Abarrotes,1,17.50,13.65
+P014,Galletas tipo María 600 g,Botanas y galletas,1,28.00,21.28
+P015,Yogurt bebible de fresa 1 L,Lácteos,1,27.00,21.06
+P016,Queso panela 400 g,Lácteos,0,58.00,51.62
+P017,Jamón de pavo 250 g,Salchichonería,1,34.00,26.18
+P018,Salchicha de pavo 500 g,Salchichonería,1,36.00,27.72
+P019,Pasta para sopa 200 g,Abarrotes,1,7.50,5.48
+P020,Mayonesa 390 g,Abarrotes,0,39.00,34.71
+P021,Chiles jalapeños en lata 220 g,Abarrotes,0,17.00,14.96
+P022,Puré de tomate 210 g,Abarrotes,1,8.00,5.92
+P023,Cloro 950 ml,Limpieza,1,13.00,9.49
+P024,Suavizante de telas 850 ml,Limpieza,1,22.00,16.50
+P025,Servilletas 500 piezas,Limpieza,1,32.00,24.32
+P026,Papas fritas con sal 170 g,Botanas y galletas,0,44.00,38.72
+P027,Jugo de naranja 1 L,Bebidas,1,21.00,16.17
+P028,Avena en hojuelas 400 g,Abarrotes,1,19.00,14.44
+P029,Cereal de maíz azucarado 500 g,Abarrotes,0,52.00,46.28
+P030,Harina de maíz 1 kg,Abarrotes,0,22.00,20.02
+P031,Leche en polvo entera 800 g,Lácteos,0,135.00,121.50
+P032,Croquetas para perro adulto 4 kg,Mascotas,1,129.00,101.91
+P033,"Pañal etapa 4, 40 piezas",Bebés,1,159.00,127.20
+P034,Shampoo 750 ml,Higiene personal,0,59.00,51.92
+P035,Jabón de tocador 3 piezas,Higiene personal,1,29.00,21.75
+P036,Pasta dental 100 ml,Higiene personal,0,26.00,22.88
+P037,"Cerveza clara lata 355 ml, 6 piezas",Cerveza,0,105.00,95.55
+P038,"Consomé de pollo en cubos, 12 piezas",Abarrotes,0,16.00,14.24
+P039,Margarina 225 g,Lácteos,1,18.00,13.68
+P040,Galletas saladas 450 g,Botanas y galletas,0,33.00,29.37

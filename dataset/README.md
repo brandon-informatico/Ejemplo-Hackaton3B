@@ -1,0 +1,138 @@
+# Dataset · Pulso Financiero 3B
+
+Territorio de **Omar** (datos). Dataset limpio y normalizado listo para que **backend** lo use.
+De dónde salen los datos (qué es real y qué es simulado): [FUENTES.md](FUENTES.md).
+
+## Archivos
+
+| Archivo | Qué es |
+|---|---|
+| `csv/*.csv` | **El dataset** (UTF-8, separado por comas, con encabezado). Es lo único que backend necesita. |
+| `csv/anomalias_esperadas.csv` | **Hoja de respuestas** para QA: qué anomalías se sembraron y cuáles NO deben alertar. No es parte de los datos de la tienda. |
+| `generar_datos.py` | Cómo se crearon los CSV (30 tiendas, mayo–octubre 2026). Misma semilla = mismos datos para todos. No hace falta correrlo. |
+
+## Cómo usarlo (backend)
+
+Los CSV se pueden leer con cualquier herramienta (pandas, SQL, Excel). Ejemplo con Python + pandas:
+
+```python
+import pandas as pd
+
+tiendas = pd.read_csv("dataset/csv/tiendas.csv", parse_dates=["fecha_apertura"])
+ventas = pd.read_csv("dataset/csv/ventas_pos.csv", parse_dates=["fecha"])
+depositos = pd.read_csv("dataset/csv/depositos.csv", parse_dates=["fecha_venta", "fecha_deposito"])
+gastos = pd.read_csv("dataset/csv/gastos.csv")
+```
+
+**Estos mismos datos ya están cargados en una base de datos en la nube** (Cloudflare D1 `pulso-financiero-db`). Cómo conectarse desde tu computadora: [docs/backend/README.md](../docs/backend/README.md). En la base, los montos están en centavos (columnas `*_centavos`).
+
+Si se cargan a otra base de datos, el orden seguro es: primero catálogos (`tiendas`, `productos`) y después movimientos (`ventas_pos`, `depositos`, `gastos`, `ventas_producto`).
+
+## Modelo de datos (en estrella, normalizado)
+
+```
+            tiendas ─────────┬──────────────┬───────────────┬────────────────┐
+           (catálogo)        │              │               │                │
+                         ventas_pos     depositos        gastos ── categorias_gasto
+                          (diario)       (diario)       (mensual)     (catálogo)
+                                                                         
+            productos ── ventas_producto (mensual)  ← también usa tiendas
+           (catálogo)
+```
+
+Reglas de limpieza que cumple el dataset (verificadas):
+
+- Sin celdas vacías ni duplicados (cada tabla tiene llave única, indicada en el diccionario).
+- Toda venta, depósito o gasto apunta a una tienda que existe; todo producto vendido existe en el catálogo (llaves foráneas).
+- Fechas `AAAA-MM-DD`, meses `AAAA-MM`, montos `1234.56` (sin `$` ni comas), enteros sin decimales, sin negativos.
+- Ninguna tienda tiene días sin registro de venta desde que abrió; cada tienda tiene las 5 categorías de gasto en cada mes que operó.
+- **Cuadre**: por tienda y mes, la suma de `ventas_producto.venta` = la suma de `ventas_pos.venta` (al centavo).
+- Montos en pesos con 2 decimales. Consejo para backend: sumar en centavos (enteros) o con tipo decimal, nunca con `float`, para que todo cuadre al centavo.
+
+Llaves únicas: `tiendas` (tienda_id) · `productos` (producto_id) · `ventas_pos` (fecha + tienda_id) · `depositos` (fecha_venta + tienda_id) · `gastos` (mes + tienda_id + categoria) · `ventas_producto` (mes + tienda_id + producto_id).
+Categorías de gasto válidas: `renta`, `luz`, `nomina`, `mantenimiento`, `merma`.
+
+## Diccionario de datos
+
+### tiendas.csv
+| Columna | Tipo | Ejemplo | Descripción |
+|---|---|---|---|
+| tienda_id | texto | T08 | Identificador único |
+| nombre | texto | Tienda 08 | Nombre para mostrar |
+| region | texto | Sur | Centro, Norte, Sur, Occidente, Bajío |
+| ciudad | texto | Oaxaca | Ciudad |
+| formato | texto | Estándar | Compacta, Estándar, Plus |
+| fecha_apertura | fecha | 2026-07-06 | Si es posterior al 2026-05-01 es tienda nueva |
+| m2 | entero | 400 | Superficie de piso de venta |
+
+### ventas_pos.csv (una fila por tienda y día)
+| Columna | Tipo | Ejemplo | Descripción |
+|---|---|---|---|
+| fecha | fecha | 2026-10-19 | Día de la venta |
+| tienda_id | texto | T08 | → tiendas |
+| venta | pesos | 78355.50 | Total cobrado en caja ese día |
+| tickets | entero | 522 | Número de compras |
+
+### depositos.csv (una fila por tienda y día de venta)
+| Columna | Tipo | Ejemplo | Descripción |
+|---|---|---|---|
+| fecha_venta | fecha | 2026-10-19 | Día de la venta que se deposita |
+| tienda_id | texto | T08 | → tiendas |
+| fecha_deposito | fecha | 2026-10-20 | Día en que el banco lo confirmó (normalmente el día siguiente) |
+| monto | pesos | 76068.58 | Monto confirmado por el banco (aquí faltan $2,286.92: es la anomalía A1) |
+| referencia | texto | DEP-T08-20261019 | Referencia bancaria |
+
+Si falta la fila de un día, el banco no confirmó depósito de ese día.
+
+### gastos.csv (una fila por tienda, mes y categoría)
+| Columna | Tipo | Ejemplo | Descripción |
+|---|---|---|---|
+| mes | mes | 2026-10 | Mes del gasto |
+| tienda_id | texto | T12 | → tiendas |
+| categoria | texto | luz | renta, luz, nomina, mantenimiento, merma |
+| monto | pesos | 44942.83 | Gasto del mes (proporcional en el mes de apertura) |
+
+### productos.csv
+| Columna | Tipo | Ejemplo | Descripción |
+|---|---|---|---|
+| producto_id | texto | P001 | Identificador único |
+| nombre | texto | Leche entera 1 L | Descripción |
+| categoria | texto | Lácteos | Familia de producto |
+| marca_propia | 0/1 | 1 | 1 = marca propia de la cadena |
+| precio_lista | pesos | 23.50 | Precio de referencia al inicio del periodo |
+| costo | pesos | 19.04 | Costo unitario de referencia |
+
+### ventas_producto.csv (una fila por tienda, mes y producto)
+| Columna | Tipo | Ejemplo | Descripción |
+|---|---|---|---|
+| mes | mes | 2026-10 | Mes |
+| tienda_id | texto | T08 | → tiendas |
+| producto_id | texto | P001 | → productos |
+| unidades | entero | 9359 | Piezas vendidas |
+| venta | pesos | 223811.75 | Venta del producto |
+| costo | pesos | 181104.27 | Costo de lo vendido |
+
+## Anomalías sembradas (resumen de `csv/anomalias_esperadas.csv`)
+
+| id | Tienda | Qué pasa | ¿Debe alertar? |
+|---|---|---|---|
+| A1 | T08 (Sur) | Faltante de depósito de 2.0% en la semana del 19 oct (caso del reto) | Sí, crítica |
+| A2 | T17 | El banco no confirmó el depósito del 12 sep | Sí, crítica |
+| A3 | T04 | Faltante de 0.7% (más de 0.5% pero menos de $5,000) | Sí, alta |
+| A4 | T12 (Norte) | Luz de octubre +34% contra su promedio de 3 meses (caso del reto) | Sí, alta |
+| A5 | T05 | Mantenimiento de septiembre 4.2 veces su promedio | Sí, alta |
+| A6 | T19 | Merma de agosto en 2.6% de la venta | Sí, crítica |
+| A7 | T21 (Sur, nueva) | Tienda nueva lenta: llega tarde a su punto de equilibrio | Sí, media |
+| C1 | T13 | Depósito completo pero 4 días tarde | **No** (no es faltante) |
+| C2 | T23 | Faltantes de 0.3% semanales (debajo del umbral) | **No** |
+| C3 | Occidente | Luz +30% en TODAS sus tiendas en octubre (tarifa) | **No** (no es atípico contra tiendas similares) |
+| C4 | T09 | Luz +18% (debajo de 25%) | **No** |
+
+Además hay diferencias normales de unos pesos en ~6% de los depósitos (monedas, redondeos) que no deben alertar.
+Alejandro puede usar esta tabla para medir aciertos y **falsas alarmas** de las reglas.
+
+## El sábado, con los datos oficiales
+
+1. Omar revisa las columnas de los CSV de 3B y las compara con este diccionario.
+2. Omar los limpia (fechas, nulos, nombres de columnas) para que queden con estas mismas columnas y reglas.
+3. Backend no tiene que cambiar su código: recibe los mismos archivos con los mismos nombres de columna.
