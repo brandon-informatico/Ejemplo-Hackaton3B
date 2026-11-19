@@ -1,15 +1,30 @@
-# Datos · Pulso Financiero 3B
+# Dataset · Pulso Financiero 3B
 
-Territorio de **Omar** (ingesta y limpieza). De dónde salen los datos: [FUENTES.md](FUENTES.md).
+Territorio de **Omar** (datos). Dataset limpio y normalizado listo para que **backend** lo use.
+De dónde salen los datos (qué es real y qué es simulado): [FUENTES.md](FUENTES.md).
 
 ## Archivos
 
 | Archivo | Qué es |
 |---|---|
-| `generar_datos.py` | Crea los CSV de práctica (30 tiendas, mayo–octubre 2026). Misma semilla = mismos datos para todos. |
-| `cargar_datos.py` | Sube los CSV a la base (local o nube) por la API, en el orden correcto. |
-| `csv/*.csv` | Dataset listo (UTF-8, separado por comas, con encabezado). |
-| `csv/anomalias_esperadas.csv` | **Hoja de respuestas** para QA: qué anomalías se sembraron y cuáles NO deben alertar. No se carga a la base. |
+| `csv/*.csv` | **El dataset** (UTF-8, separado por comas, con encabezado). Es lo único que backend necesita. |
+| `csv/anomalias_esperadas.csv` | **Hoja de respuestas** para QA: qué anomalías se sembraron y cuáles NO deben alertar. No es parte de los datos de la tienda. |
+| `generar_datos.py` | Cómo se crearon los CSV (30 tiendas, mayo–octubre 2026). Misma semilla = mismos datos para todos. No hace falta correrlo. |
+
+## Cómo usarlo (backend)
+
+Los CSV se pueden leer con cualquier herramienta (pandas, SQL, Excel). Ejemplo con Python + pandas:
+
+```python
+import pandas as pd
+
+tiendas = pd.read_csv("dataset/csv/tiendas.csv", parse_dates=["fecha_apertura"])
+ventas = pd.read_csv("dataset/csv/ventas_pos.csv", parse_dates=["fecha"])
+depositos = pd.read_csv("dataset/csv/depositos.csv", parse_dates=["fecha_venta", "fecha_deposito"])
+gastos = pd.read_csv("dataset/csv/gastos.csv")
+```
+
+Para cargarlos a una base de datos, el orden seguro es: primero catálogos (`tiendas`, `productos`) y después movimientos (`ventas_pos`, `depositos`, `gastos`, `ventas_producto`).
 
 ## Modelo de datos (en estrella, normalizado)
 
@@ -23,13 +38,17 @@ Territorio de **Omar** (ingesta y limpieza). De dónde salen los datos: [FUENTES
            (catálogo)
 ```
 
-Reglas de limpieza que cumple el dataset (y que valida la API al cargar):
+Reglas de limpieza que cumple el dataset (verificadas):
 
-- Sin celdas vacías ni duplicados (cada tabla tiene llave primaria).
+- Sin celdas vacías ni duplicados (cada tabla tiene llave única, indicada en el diccionario).
 - Toda venta, depósito o gasto apunta a una tienda que existe; todo producto vendido existe en el catálogo (llaves foráneas).
-- Fechas `AAAA-MM-DD`, meses `AAAA-MM`, montos `1234.56` (sin `$` ni comas), enteros sin decimales.
-- Montos en pesos en el CSV; la base los guarda en centavos para que todo cuadre al centavo.
-- **Cuadre**: por tienda y mes, la suma de `ventas_producto.venta` = la suma de `ventas_pos.venta`.
+- Fechas `AAAA-MM-DD`, meses `AAAA-MM`, montos `1234.56` (sin `$` ni comas), enteros sin decimales, sin negativos.
+- Ninguna tienda tiene días sin registro de venta desde que abrió; cada tienda tiene las 5 categorías de gasto en cada mes que operó.
+- **Cuadre**: por tienda y mes, la suma de `ventas_producto.venta` = la suma de `ventas_pos.venta` (al centavo).
+- Montos en pesos con 2 decimales. Consejo para backend: sumar en centavos (enteros) o con tipo decimal, nunca con `float`, para que todo cuadre al centavo.
+
+Llaves únicas: `tiendas` (tienda_id) · `productos` (producto_id) · `ventas_pos` (fecha + tienda_id) · `depositos` (fecha_venta + tienda_id) · `gastos` (mes + tienda_id + categoria) · `ventas_producto` (mes + tienda_id + producto_id).
+Categorías de gasto válidas: `renta`, `luz`, `nomina`, `mantenimiento`, `merma`.
 
 ## Diccionario de datos
 
@@ -112,6 +131,6 @@ Alejandro puede usar esta tabla para medir aciertos y **falsas alarmas** de las 
 
 ## El sábado, con los datos oficiales
 
-1. Revisar las columnas de los CSV de 3B y compararlas con este diccionario.
-2. Adaptar (limpiar fechas, nulos, nombres de columnas) para que queden con estas mismas columnas.
-3. `cargar_datos.py` rechaza el archivo completo si encuentra una fila sucia y dice la línea exacta del problema.
+1. Omar revisa las columnas de los CSV de 3B y las compara con este diccionario.
+2. Omar los limpia (fechas, nulos, nombres de columnas) para que queden con estas mismas columnas y reglas.
+3. Backend no tiene que cambiar su código: recibe los mismos archivos con los mismos nombres de columna.

@@ -32,7 +32,7 @@ Documentos:
 
 ## Resultado de la calibración
 
-Lo imprime `python data/generar_datos.py` cada vez que se genera:
+Lo imprime `python dataset/generar_datos.py` cada vez que se genera:
 
 | Indicador | Dataset | Real 3B |
 |---|---|---|

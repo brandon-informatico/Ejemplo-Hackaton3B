@@ -2,21 +2,21 @@
 Generador del dataset de práctica · Pulso Financiero 3B
 =======================================================
 
-Crea CSV limpios y normalizados (modelo en estrella) en data/csv/:
+Crea CSV limpios y normalizados (modelo en estrella) en dataset/csv/:
 
   DIMENSIONES  tiendas.csv, productos.csv
   HECHOS       ventas_pos.csv, depositos.csv, gastos.csv, ventas_producto.csv
-  QA           anomalias_esperadas.csv  (hoja de respuestas: NO se carga a la base)
+  QA           anomalias_esperadas.csv  (hoja de respuestas: no son datos de la tienda)
 
-¿Qué es real y qué es simulado?  -> ver data/FUENTES.md
+¿Qué es real y qué es simulado?  -> ver dataset/FUENTES.md
   * Los PARÁMETROS vienen de los reportes públicos de Tiendas 3B (BBB Foods, NYSE: TBBB):
     venta por tienda, margen bruto, gastos de tienda, renta, crecimiento de ventas
     mismas tiendas, ritmo de aperturas y participación de marca propia.
   * Los REGISTROS diarios por tienda son SIMULADOS: 3B no publica datos por tienda.
 
 Uso (desde la carpeta del proyecto):
-    python data/generar_datos.py                 # 30 tiendas, mayo-octubre 2026
-    python data/generar_datos.py --tiendas 60    # más datos para pruebas de volumen
+    python dataset/generar_datos.py                 # 30 tiendas, mayo-octubre 2026
+    python dataset/generar_datos.py --tiendas 60    # más datos para pruebas de volumen
 Solo usa la biblioteca estándar de Python (no hay que instalar nada).
 """
 

@@ -5,7 +5,6 @@
 		"module": "preserve",
 		"moduleResolution": "bundler",
 		"jsx": "react-jsx",
-		"types": ["@cloudflare/vitest-plugin/types"],
 		"strict": true,
 		"noEmit": true,
 		"allowImportingTsExtensions": true,
@@ -13,5 +12,5 @@
 		"verbatimModuleSyntax": true,
 		"skipLibCheck": true
 	},
-	"include": ["api", "frontend", "test", "cloudflare.config.ts", "vite.config.ts", ".cloudflare/types"]
+	"include": ["frontend", "cloudflare.config.ts", "vite.config.ts"]
 }
